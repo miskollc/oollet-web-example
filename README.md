@@ -4,3 +4,6 @@ Example integration with:
 * @aptos-labs/wallet-adapter-ant-design
 * @aptos-labs/wallet-adapter-react
 * @miskollc/oollet-adapter-plugin
+
+# Deploy
+npm run deploy

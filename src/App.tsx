@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <div className="navbar">
-        <div className="navbar-text">Oollet example web app 2</div>
+        <div className="navbar-text">Oollet example web app</div>
         <div>
           <WalletSelector />
         </div>

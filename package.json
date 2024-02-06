@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "Apache-2.0",
   "homepage": "https://miskollc.github.io/oollet-web-example/",
+  "type": "module",
   "dependencies": {
     "@aptos-labs/ts-sdk": "^0.0.3",
     "@aptos-labs/wallet-adapter-ant-design": "^1.2.5",
