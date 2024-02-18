@@ -25,11 +25,18 @@ body {
   font-size: 20px;
 }
 
-.center-container {
+.center-link-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Adjust this to control vertical centering */
+  height: 10vh; /* Adjust this to control vertical centering */
+}
+
+.center-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20vh; /* Adjust this to control vertical centering */
 }
 
 .center-image {
