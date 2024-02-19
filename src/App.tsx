@@ -1,5 +1,5 @@
-import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
-import "@aptos-labs/wallet-adapter-ant-design/dist/index.css";
+import { WalletConnector } from "@aptos-labs/wallet-adapter-mui-design";
+//import "@aptos-labs/wallet-adapter-ant-design/dist/index.css";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import {
   AccountInfo,
@@ -17,7 +17,7 @@ function App() {
       <div className="navbar">
         <div className="navbar-text">Oollet example web app</div>
         <div>
-          <WalletSelector />
+          <WalletConnector className="wallet-button"/>
         </div>
       </div>
       <div className="center-link-container">

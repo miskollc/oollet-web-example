@@ -16,13 +16,17 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #333;
+  background-color: #1c5852;
   color: #fff;
   padding: 10px 20px;
 }
 
 .navbar-text {
   font-size: 20px;
+}
+
+.wallet-button {
+  background-color:red;
 }
 
 .center-link-container {

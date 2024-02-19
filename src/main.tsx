@@ -6,8 +6,8 @@ import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
 import { PetraWallet } from "petra-plugin-wallet-adapter";
 import { OolletWallet } from "@miskollc/oollet-adapter-plugin";
 
-import App from "./App";
 import "./index.css";
+import App from "./App";
 
 const wallets = [
   new PetraWallet(),

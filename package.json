@@ -5,7 +5,7 @@
   "homepage": "https://miskollc.github.io/oollet-web-example/",
   "dependencies": {
     "@aptos-labs/ts-sdk": "^1.5.1",
-    "@aptos-labs/wallet-adapter-ant-design": "^2.0.0",
+    "@aptos-labs/wallet-adapter-mui-design": "^2.1.0",
     "@aptos-labs/wallet-adapter-react": "^2.1.3",
     "@miskollc/oollet-adapter-plugin": "^0.1.2",
     "aptos": "^1.18.0",
