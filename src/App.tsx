@@ -6,9 +6,25 @@ import {
   NetworkInfo,
   WalletInfo,
 } from "@aptos-labs/wallet-adapter-core";
-import Row from "./components/Row";
+//import Row from "./components/Row";
 import Col from "./components/Col";
-//import Image from "next/image";
+import SingleSignerTransaction from "./components/transactionFlow/SingleSigner";
+import { Network } from "@aptos-labs/ts-sdk";
+
+const isOolletWallet = (walletName?: string): boolean => {
+  return walletName?.toLowerCase() === "oollet";
+}
+
+const isSendableNetwork = (connected: boolean, network?: string, walletName?: string): boolean => {
+  return (
+    connected &&
+    (
+      ((network?.toLowerCase() === Network.DEVNET.toLowerCase()) && (walletName?.toLowerCase() === "petra")) ||
+      ((network?.toLowerCase() === Network.TESTNET.toLowerCase()) && (walletName?.toLowerCase() === "petra")) ||
+      ((network?.toLowerCase() === Network.MAINNET.toLowerCase()) && (walletName?.toLowerCase() === "oollet"))
+    )
+  );
+};
 
 function App() {
   const { account, connected, network, wallet } = useWallet();
@@ -26,17 +42,30 @@ function App() {
       <table className="table-auto w-full border-separate border-spacing-y-8 shadow-lg bg-white border-separate">
         <tbody>
           {connected && (
-            <Row>
-              <Col title={true} border={true}>
-                <h3>
-                  <b>Wallet Information</b>
-                </h3>
+            <WalletProps wallet={wallet} network={network} account={account} />
+          )}
+          {connected && !isSendableNetwork(connected, network?.name, wallet?.name) && !isOolletWallet(wallet?.name) && (
+            <tr>
+              <Col title={true}></Col>
+              <Col>
+                <p style={{ color: "red" }}>
+                  Aptos/Petra transactions only work with Devnet or Testnet networks
+                </p>
               </Col>
-              <Col border={true} />
-            </Row>
+            </tr>
+          )}
+          {connected && !isSendableNetwork(connected, network?.name, wallet?.name) && isOolletWallet(wallet?.name) && (
+            <tr>
+              <Col title={true}></Col>
+              <Col>
+                <p style={{ color: "red" }}>
+                  OL/Oollet transactions only work with Mainnet network
+                </p>
+              </Col>
+            </tr>
           )}
           {connected && (
-            <WalletProps wallet={wallet} network={network} account={account} />
+            <SingleSignerTransaction isSendableNetwork={isSendableNetwork} isOolletWallet={isOolletWallet} />
           )}
         </tbody>
       </table>
@@ -53,58 +82,20 @@ function WalletProps(props: {
   network: NetworkInfo | null;
   wallet: WalletInfo | null;
 }) {
-  const { account, network, wallet } = props;
+  const { account, network } = props;
 
   return (
     <>
-      <tr>
-        <Col title={true}>
-          <h3>Wallet Name</h3>
-        </Col>
         <Col>
-          <b>Icon: </b>
-          {props.wallet && (
-            <img src={wallet?.icon ?? ""} alt={wallet?.name ?? ""} />
-          )
-          //  <Image
-          //    src={wallet?.icon ?? ""}
-          //    alt={wallet?.name ?? ""}
-          //    width={25}
-          //    height={25}
-          // />
-          //)
-          }
-          <b> Name: </b>
-          {wallet?.name}
-          <b> URL: </b>
-          <a
-            target="_blank"
-            className="text-sky-600"
-            rel="noreferrer"
-            href={wallet?.url}
-          >
-            {wallet?.url}
-          </a>
-        </Col>
-      </tr>
-      <Row>
-        <Col title={true}>
-          <h3>Account Info</h3>
-        </Col>
-        <Col>
+          <h3>
+            <b>Wallet Information</b>
+          </h3>
           <DisplayOptionalValue
             name={"Address"}
             value={account?.address}
           />
-        </Col>
-      </Row>
-      <Row>
-        <Col title={true}>
-          <h3>Network Info</h3>
-        </Col>
-        <Col>
           <DisplayOptionalValue
-            name={"Network Name"}
+            name={"Network"}
             value={network?.name}
           />
           <DisplayOptionalValue
@@ -113,7 +104,6 @@ function WalletProps(props: {
           />
           <DisplayOptionalValue name={"ChainId"} value={network?.chainId} />
         </Col>
-      </Row>
     </>
   );
 }

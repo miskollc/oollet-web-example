@@ -1,0 +1,190 @@
+//import { parseTypeTag, AccountAddress, U64 } from "@aptos-labs/ts-sdk";
+import {
+  useWallet,
+  InputTransactionData,
+} from "@aptos-labs/wallet-adapter-react";
+
+import { aptosClient } from "../utils";
+import Button from "../Button";
+import Col from "../Col";
+import Row from "../Row";
+
+export const APTOS_COIN = "0x1::aptos_coin::AptosCoin";
+export const LIBRA_COIN = "0x1::libra_coin::LibraCoin";
+type SingleSignerTransactionProps = {
+  isSendableNetwork: (connected: boolean, network?: string, walletName?: string) => boolean;
+  isOolletWallet: (walletName?: string) => boolean;
+};
+
+export default function SingleSignerTransaction({
+  isSendableNetwork,
+  isOolletWallet
+}: SingleSignerTransactionProps) {
+
+  const {
+    connected,
+    account,
+    network,
+    wallet,
+    signAndSubmitTransaction,
+    //signMessageAndVerify,
+    //signMessage,
+    //signTransaction,
+  } = useWallet();
+  let sendable = isSendableNetwork(connected, network?.name, wallet?.name) && isOolletWallet(wallet?.name);
+
+  /*const onSignMessageAndVerify = async () => {
+    const payload = {
+      message: "Hello from Aptos Wallet Adapter",
+      nonce: Math.random().toString(16),
+    };
+    const response = await signMessageAndVerify(payload);
+    setSuccessAlertMessage(
+      JSON.stringify({ onSignMessageAndVerify: response })
+    );
+  };
+
+  const onSignMessage = async () => {
+    const payload = {
+      message: "Hello from Aptos Wallet Adapter",
+      nonce: Math.random().toString(16),
+    };
+    const response = await signMessage(payload);
+    setSuccessAlertMessage(JSON.stringify({ onSignMessage: response }));
+  };*/
+
+  const onSignAndSubmitTransaction = async () => {
+    if (!account) return;
+    var coinType = isOolletWallet(wallet?.name) ? LIBRA_COIN  : APTOS_COIN;
+    const transaction: InputTransactionData = {
+      data: {
+        function: "0x1::coin::transfer",
+        typeArguments: [coinType],
+        // For testing, this address can be changed to one you own
+        functionArguments: ["decaf00000000000000000000000000000000000000000000000000000c0ffee", 10000], // 10,000 is in uLibra (.01 Libra)
+      },
+    };
+    try {
+      console.log("onSignAndSubmitTransaction");
+      const response = await signAndSubmitTransaction(transaction);
+      await aptosClient(network?.name.toLowerCase()).waitForTransaction({
+        transactionHash: response.hash,
+        //options: WaitForTransactionOptions
+      });
+      alert(`Transaction submitted: check\nhttps://rpc.openlibra.space:8080/v1/transactions/by_hash/${response.hash}`);
+    } catch (error) {
+      alert("Error: check logs")
+      console.error(error);
+    }
+  };
+
+  /*const onSignAndSubmitBCSTransaction = async () => {
+    if (!account) return;
+
+    try {
+      const response = await signAndSubmitTransaction({
+        data: {
+          function: "0x1::coin::transfer",
+          typeArguments: [parseTypeTag(APTOS_COIN)],
+          functionArguments: [AccountAddress.from(account.address), new U64(1)], // 1 is in Octas
+        },
+      });
+      await aptosClient(network?.name.toLowerCase()).waitForTransaction({
+        transactionHash: response.hash,
+      });
+      setSuccessAlertHash(response.hash, network?.name);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Legacy typescript sdk support
+  const onSignTransaction = async () => {
+    try {
+      const payload = {
+        type: "entry_function_payload",
+        function: "0x1::coin::transfer",
+        type_arguments: ["0x1::aptos_coin::AptosCoin"],
+        arguments: [account?.address, 1], // 1 is in Octas
+      };
+      const response = await signTransaction(payload);
+      setSuccessAlertMessage(JSON.stringify(response));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onSignTransactionV2 = async () => {
+    if (!account) return;
+
+    try {
+      const transactionToSign = await aptosClient(
+        network?.name.toLowerCase()
+      ).transaction.build.simple({
+        sender: account.address,
+        data: {
+          function: "0x1::coin::transfer",
+          typeArguments: [APTOS_COIN],
+          functionArguments: [account.address, 1], // 1 is in Octas
+        },
+      });
+      const response = await signTransaction(transactionToSign);
+      setSuccessAlertMessage(JSON.stringify(response));
+    } catch (error) {
+      console.error(error);
+    }
+  };*/
+
+  return (
+    <Row>
+      <div>
+      <Col title={true} border={true}>
+        <h3>Single Signer Flow</h3>
+      </Col>
+      <div></div>
+      <Col border={true}>
+        <Button
+          color={"blue"}
+          onClick={onSignAndSubmitTransaction}
+          disabled={!sendable}
+          message={"Send 0.01 Libra to burn addr"}
+        />
+      </Col>
+      </div>
+    </Row>
+  );
+  /*      <Button
+          color={"blue"}
+          onClick={onSignAndSubmitBCSTransaction}
+          disabled={!sendable}
+          message={"Sign and submit BCS transaction"}
+        />
+        <Button
+          color={"blue"}
+          onClick={onSignTransaction}
+          disabled={!sendable}
+          message={"Sign transaction"}
+        />
+        <Button
+          color={"blue"}
+          onClick={onSignTransactionV2}
+          disabled={!sendable}
+          message={"Sign transaction V2"}
+        />
+
+        <Button
+          color={"blue"}
+          onClick={onSignMessage}
+          disabled={!sendable}
+          message={"Sign message"}
+        />
+        <Button
+          color={"blue"}
+          onClick={onSignMessageAndVerify}
+          disabled={!sendable}
+          message={"Sign message and verify"}
+        />
+      </Col>
+    </Row>
+  );*/
+}
